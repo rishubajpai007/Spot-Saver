@@ -4,8 +4,6 @@
 //
 //  Created by Rishu Bajpai on 25/09/25.
 //
-
-// AddSpotViewModel.swift
 import SwiftUI
 import CoreLocation
 import Combine
@@ -18,7 +16,6 @@ class AddSpotViewModel: ObservableObject {
     @Published var selectedPhotoData: Data?
     @Published var location: CLLocationCoordinate2D?
 
-    // Check if the form is valid for saving
     var isFormValid: Bool {
         !name.isEmpty && location != nil
     }

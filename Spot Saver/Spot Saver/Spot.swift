@@ -17,7 +17,7 @@ final class Spot {
     var category: String
     var latitude: Double
     var longitude: Double
-    @Attribute(.externalStorage) var photo: Data? // Use externalStorage for large data like images
+    @Attribute(.externalStorage) var photo: Data?
     var dateAdded: Date
 
     init(name: String, notes: String, category: String, latitude: Double, longitude: Double, photo: Data? = nil) {
@@ -31,7 +31,6 @@ final class Spot {
         self.dateAdded = .now
     }
 
-    // Computed property to make using coordinates with MapKit easier
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }

@@ -5,7 +5,6 @@
 //  Created by Rishu Bajpai on 24/09/25.
 //
 
-// Spot_SaverApp.swift
 import SwiftUI
 import SwiftData
 

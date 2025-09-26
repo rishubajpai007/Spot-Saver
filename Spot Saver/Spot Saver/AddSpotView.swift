@@ -4,14 +4,11 @@
 //
 //  Created by Rishu Bajpai on 25/09/25.
 //
-
-// AddSpotView.swift
 import SwiftUI
 import PhotosUI
 import SwiftData
 
 struct AddSpotView: View {
-    // This view's only job is to call this function when "Save" is tapped.
     var onSave: (Spot) -> Void
     
     @Environment(\.dismiss) private var dismiss

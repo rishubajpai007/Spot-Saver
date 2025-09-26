@@ -5,7 +5,6 @@
 //  Created by Rishu Bajpai on 25/09/25.
 //
 
-// SpotsListView.swift
 import SwiftUI
 import SwiftData
 
@@ -36,10 +35,7 @@ struct SpotsListView: View {
                 }
             }
             .sheet(isPresented: $isAddingSpot) {
-                // This view now takes a completion handler.
                 AddSpotView { newSpot in
-                    // This is the callback. We are now in the correct
-                    // context to save the data.
                     addSpot(spot: newSpot)
                 }
             }

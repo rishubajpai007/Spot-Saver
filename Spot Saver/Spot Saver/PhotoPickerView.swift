@@ -5,7 +5,6 @@
 //  Created by Rishu Bajpai on 25/09/25.
 //
 
-// PhotoPickerView.swift
 import SwiftUI
 import PhotosUI
 
