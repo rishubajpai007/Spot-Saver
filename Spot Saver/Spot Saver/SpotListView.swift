@@ -12,6 +12,8 @@ struct SpotsListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Spot.dateAdded, order: .reverse) private var spots: [Spot]
     @State private var isAddingSpot = false
+    @State private var searchText = ""
+
     
     var body: some View {
         NavigationStack {
@@ -31,7 +33,7 @@ struct SpotsListView: View {
                 }
             } else {
                 List {
-                    ForEach(spots) { spot in
+                    ForEach(searchResults) { spot in
                         NavigationLink(destination: SpotDetailView(spot: spot)) {
                             VStack(alignment: .leading) {
                                 Text(spot.name).font(.headline)
@@ -56,9 +58,21 @@ struct SpotsListView: View {
                 addSpot(spot: newSpot)
             }
         }
-
+        .searchable(text: $searchText,placement: .navigationBarDrawer)
     }
 
+    var searchResults: [Spot] {
+            if searchText.isEmpty {
+                return spots
+            } else {
+                return spots.filter { spot in
+                    let nameMatch = spot.name.localizedStandardContains(searchText)
+                    let categoryMatch = spot.category.localizedStandardContains(searchText)
+                    return nameMatch || categoryMatch
+                }
+            }
+        }
+    
     private func addSpot(spot: Spot) {
         modelContext.insert(spot)
     }
@@ -71,3 +85,4 @@ struct SpotsListView: View {
         }
     }
 }
+

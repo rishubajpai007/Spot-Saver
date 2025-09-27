@@ -88,7 +88,6 @@ struct SpotDetailView: View {
             }
             .padding()
         }
-        .navigationTitle(spot.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
