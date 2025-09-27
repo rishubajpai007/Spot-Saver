@@ -15,31 +15,48 @@ struct SpotsListView: View {
     
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(spots) { spot in
-                    NavigationLink(destination: SpotDetailView(spot: spot)) {
-                        VStack(alignment: .leading) {
-                            Text(spot.name).font(.headline)
-                            Text(spot.category).font(.subheadline).foregroundStyle(.secondary)
+            if spots.isEmpty {
+                ContentUnavailableView(
+                    "No Spots Saved",
+                    systemImage: "mappin.and.ellipse",
+                    description: Text("Tap the '+' button to add your first spot.")
+                )
+                .navigationTitle("Spot Saver")
+                .toolbar {
+                    ToolbarItem {
+                        Button(action: { isAddingSpot = true }) {
+                            Label("Add Spot", systemImage: "plus")
                         }
                     }
                 }
-                .onDelete(perform: deleteSpots)
-            }
-            .navigationTitle("Spot Saver")
-            .toolbar {
-                ToolbarItem {
-                    Button(action: { isAddingSpot = true }) {
-                        Label("Add Spot", systemImage: "plus")
+            } else {
+                List {
+                    ForEach(spots) { spot in
+                        NavigationLink(destination: SpotDetailView(spot: spot)) {
+                            VStack(alignment: .leading) {
+                                Text(spot.name).font(.headline)
+                                Text(spot.category).font(.subheadline).foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                    .onDelete(perform: deleteSpots)
+                }
+                .navigationTitle("Spot Saver")
+                .toolbar {
+                    ToolbarItem {
+                        Button(action: { isAddingSpot = true }) {
+                            Label("Add Spot", systemImage: "plus")
+                        }
                     }
                 }
             }
-            .sheet(isPresented: $isAddingSpot) {
-                AddSpotView { newSpot in
-                    addSpot(spot: newSpot)
-                }
+        }
+        .sheet(isPresented: $isAddingSpot) {
+            AddSpotView { newSpot in
+                addSpot(spot: newSpot)
             }
         }
+
     }
 
     private func addSpot(spot: Spot) {
