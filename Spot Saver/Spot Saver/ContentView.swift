@@ -23,6 +23,13 @@ struct ContentView: View {
             .tabItem {
                 Label("Favorites", systemImage: "star.fill")
             }
+            
+            NavigationStack {
+                FullMapView()
+            }
+            .tabItem {
+                Label("Map", systemImage: "map.fill")
+            }
         }
     }
 }
