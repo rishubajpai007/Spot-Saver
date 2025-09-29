@@ -29,69 +29,59 @@ struct SpotDetailView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 15) {
-                // MARK: - Photo Section
+            VStack(alignment: .leading, spacing: 0) {
                 if let imageData = spot.photo, let uiImage = UIImage(data: imageData) {
                     Image(uiImage: uiImage)
                         .resizable()
-                        .scaledToFit()
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .shadow(radius: 5)
-                }
-
-                // MARK: - Info Section
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(spot.name)
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-
-                    HStack {
-                        Image(systemName: "tag.fill")
-                        Text(spot.category)
-                    }
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    
-                    HStack {
-                        Image(systemName: "calendar")
-                        Text(spot.dateAdded.formatted(date: .long, time: .shortened))
-                    }
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                        .scaledToFill()
+                        .frame(height: 300)
+                        .clipped()
                 }
                 
-                Divider()
+                VStack(alignment: .leading, spacing: 20) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(spot.name)
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                            .foregroundStyle(Color("PrimaryText"))
+                        
+                        HStack {
+                            InfoTagView(text: spot.category, iconName: "tag.fill")
+                            InfoTagView(text: spot.dateAdded.formatted(date: .abbreviated, time: .omitted), iconName: "calendar")
+                        }
+                    }
+                    
+                    if !spot.notes.isEmpty {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Notes")
+                                .font(.title2)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(Color("PrimaryText"))
+                            Text(spot.notes)
+                                .foregroundStyle(Color("SecondaryText"))
+                        }
+                    }
 
-                // MARK: - Notes Section
-                if !spot.notes.isEmpty {
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text("Notes")
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Location")
                             .font(.title2)
                             .fontWeight(.semibold)
-                        Text(spot.notes)
+                            .foregroundStyle(Color("PrimaryText"))
+                        
+                        Map(position: $cameraPosition) {
+                            Marker(spot.name, coordinate: spot.coordinate)
+                        }
+                        .frame(height: 250)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
                     }
-                    Divider()
                 }
-
-                // MARK: - Map Section
-                VStack(alignment: .leading, spacing: 5) {
-                    Text("Location")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                    
-                    Map(position: $cameraPosition) {
-                        Marker(spot.name, coordinate: spot.coordinate)
-                    }
-                    .frame(height: 250)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                }
+                .padding(.horizontal,30)
             }
-            .padding()
         }
+        .background(Color("AppBackground"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
-               
                 Button("Edit") {
                     isEditing = true
                 }
@@ -121,8 +111,29 @@ struct SpotDetailView: View {
     }
 }
 
+// This extension is needed for the .onChange modifier
 extension CLLocationCoordinate2D: Equatable {
     public static func == (lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
         lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
+    }
+}
+
+// This is the new helper view for the styled tags
+struct InfoTagView: View {
+    let text: String
+    let iconName: String
+    
+    var body: some View {
+        HStack {
+            Image(systemName: iconName)
+            Text(text)
+        }
+        .font(.caption)
+        .fontWeight(.medium)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 5)
+        .background(Color.accentColor.opacity(0.1))
+        .foregroundStyle(.accent)
+        .clipShape(Capsule())
     }
 }

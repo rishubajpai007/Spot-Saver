@@ -35,13 +35,12 @@ struct SpotsListView: View {
                 List {
                     ForEach(searchResults) { spot in
                         NavigationLink(destination: SpotDetailView(spot: spot)) {
-                            VStack(alignment: .leading) {
-                                Text(spot.name).font(.headline)
-                                Text(spot.category).font(.subheadline).foregroundStyle(.secondary)
-                            }
+                            SpotRowView(spot:spot)
                         }
                     }
                     .onDelete(perform: deleteSpots)
+                    .listStyle(.plain) 
+                    .background(Color("AppBackground"))
                 }
                 .navigationTitle("Spot Saver")
                 .toolbar {
