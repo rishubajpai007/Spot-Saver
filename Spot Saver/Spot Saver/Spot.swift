@@ -19,8 +19,9 @@ final class Spot {
     var longitude: Double
     @Attribute(.externalStorage) var photo: Data?
     var dateAdded: Date
+    var isFavorite: Bool
 
-    init(name: String, notes: String, category: String, latitude: Double, longitude: Double, photo: Data? = nil) {
+    init(name: String, notes: String, category: String, latitude: Double, longitude: Double, photo: Data? = nil, isFavorite: Bool = false) {
         self.id = UUID()
         self.name = name
         self.notes = notes
@@ -29,6 +30,7 @@ final class Spot {
         self.longitude = longitude
         self.photo = photo
         self.dateAdded = .now
+        self.isFavorite = isFavorite
     }
 
     var coordinate: CLLocationCoordinate2D {

@@ -6,14 +6,76 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		FF81C16A2E8ADA0D00A12CAE /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF81C1692E8ADA0D00A12CAE /* WidgetKit.framework */; };
+		FF81C16C2E8ADA0D00A12CAE /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF81C16B2E8ADA0D00A12CAE /* SwiftUI.framework */; };
+		FF81C17B2E8ADA0F00A12CAE /* SpotSaverWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = FF81C1672E8ADA0D00A12CAE /* SpotSaverWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		FF81C1792E8ADA0F00A12CAE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FF6FB3AB2E84387D007A14FC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FF81C1662E8ADA0D00A12CAE;
+			remoteInfo = SpotSaverWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		FF81C1802E8ADA0F00A12CAE /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				FF81C17B2E8ADA0F00A12CAE /* SpotSaverWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		FF6FB3B32E84387D007A14FC /* Spot Saver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Spot Saver.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FF81C1672E8ADA0D00A12CAE /* SpotSaverWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SpotSaverWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		FF81C1692E8ADA0D00A12CAE /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		FF81C16B2E8ADA0D00A12CAE /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		FF81C1822E8ADBA900A12CAE /* SpotSaverWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SpotSaverWidgetExtension.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		FF81C17C2E8ADA0F00A12CAE /* Exceptions for "SpotSaverWidget" folder in "SpotSaverWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = FF81C1662E8ADA0D00A12CAE /* SpotSaverWidgetExtension */;
+		};
+		FF81C1842E8ADDF800A12CAE /* Exceptions for "Spot Saver" folder in "SpotSaverWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Spot.swift,
+			);
+			target = FF81C1662E8ADA0D00A12CAE /* SpotSaverWidgetExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		FF6FB3B52E84387D007A14FC /* Spot Saver */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				FF81C1842E8ADDF800A12CAE /* Exceptions for "Spot Saver" folder in "SpotSaverWidgetExtension" target */,
+			);
 			path = "Spot Saver";
+			sourceTree = "<group>";
+		};
+		FF81C16D2E8ADA0D00A12CAE /* SpotSaverWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				FF81C17C2E8ADA0F00A12CAE /* Exceptions for "SpotSaverWidget" folder in "SpotSaverWidgetExtension" target */,
+			);
+			path = SpotSaverWidget;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -26,13 +88,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FF81C1642E8ADA0D00A12CAE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FF81C16C2E8ADA0D00A12CAE /* SwiftUI.framework in Frameworks */,
+				FF81C16A2E8ADA0D00A12CAE /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		FF6FB3AA2E84387D007A14FC = {
 			isa = PBXGroup;
 			children = (
+				FF81C1822E8ADBA900A12CAE /* SpotSaverWidgetExtension.entitlements */,
 				FF6FB3B52E84387D007A14FC /* Spot Saver */,
+				FF81C16D2E8ADA0D00A12CAE /* SpotSaverWidget */,
+				FF81C1682E8ADA0D00A12CAE /* Frameworks */,
 				FF6FB3B42E84387D007A14FC /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,8 +115,18 @@
 			isa = PBXGroup;
 			children = (
 				FF6FB3B32E84387D007A14FC /* Spot Saver.app */,
+				FF81C1672E8ADA0D00A12CAE /* SpotSaverWidgetExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		FF81C1682E8ADA0D00A12CAE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FF81C1692E8ADA0D00A12CAE /* WidgetKit.framework */,
+				FF81C16B2E8ADA0D00A12CAE /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -55,10 +139,12 @@
 				FF6FB3AF2E84387D007A14FC /* Sources */,
 				FF6FB3B02E84387D007A14FC /* Frameworks */,
 				FF6FB3B12E84387D007A14FC /* Resources */,
+				FF81C1802E8ADA0F00A12CAE /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				FF81C17A2E8ADA0F00A12CAE /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				FF6FB3B52E84387D007A14FC /* Spot Saver */,
@@ -69,6 +155,28 @@
 			productName = "Spot Saver";
 			productReference = FF6FB3B32E84387D007A14FC /* Spot Saver.app */;
 			productType = "com.apple.product-type.application";
+		};
+		FF81C1662E8ADA0D00A12CAE /* SpotSaverWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FF81C17D2E8ADA0F00A12CAE /* Build configuration list for PBXNativeTarget "SpotSaverWidgetExtension" */;
+			buildPhases = (
+				FF81C1632E8ADA0D00A12CAE /* Sources */,
+				FF81C1642E8ADA0D00A12CAE /* Frameworks */,
+				FF81C1652E8ADA0D00A12CAE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				FF81C16D2E8ADA0D00A12CAE /* SpotSaverWidget */,
+			);
+			name = SpotSaverWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = SpotSaverWidgetExtension;
+			productReference = FF81C1672E8ADA0D00A12CAE /* SpotSaverWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -81,6 +189,9 @@
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					FF6FB3B22E84387D007A14FC = {
+						CreatedOnToolsVersion = 26.0.1;
+					};
+					FF81C1662E8ADA0D00A12CAE = {
 						CreatedOnToolsVersion = 26.0.1;
 					};
 				};
@@ -100,12 +211,20 @@
 			projectRoot = "";
 			targets = (
 				FF6FB3B22E84387D007A14FC /* Spot Saver */,
+				FF81C1662E8ADA0D00A12CAE /* SpotSaverWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		FF6FB3B12E84387D007A14FC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FF81C1652E8ADA0D00A12CAE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -122,7 +241,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FF81C1632E8ADA0D00A12CAE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		FF81C17A2E8ADA0F00A12CAE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FF81C1662E8ADA0D00A12CAE /* SpotSaverWidgetExtension */;
+			targetProxy = FF81C1792E8ADA0F00A12CAE /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		FF6FB3BC2E84387E007A14FC /* Debug */ = {
@@ -249,8 +383,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Spot Saver/Spot Saver.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = S286S6SAFP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "need location for mapkit";
@@ -281,8 +417,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Spot Saver/Spot Saver.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = S286S6SAFP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "need location for mapkit";
@@ -308,6 +446,68 @@
 			};
 			name = Release;
 		};
+		FF81C17E2E8ADA0F00A12CAE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = SpotSaverWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = S286S6SAFP;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SpotSaverWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SpotSaverWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rishu.Spot-Saver.SpotSaverWidget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		FF81C17F2E8ADA0F00A12CAE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = SpotSaverWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = S286S6SAFP;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SpotSaverWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SpotSaverWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rishu.Spot-Saver.SpotSaverWidget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -325,6 +525,15 @@
 			buildConfigurations = (
 				FF6FB3BF2E84387E007A14FC /* Debug */,
 				FF6FB3C02E84387E007A14FC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FF81C17D2E8ADA0F00A12CAE /* Build configuration list for PBXNativeTarget "SpotSaverWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FF81C17E2E8ADA0F00A12CAE /* Debug */,
+				FF81C17F2E8ADA0F00A12CAE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

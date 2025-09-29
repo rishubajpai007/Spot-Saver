@@ -22,9 +22,9 @@ struct AddSpotView: View {
                 TextField("Notes", text: $viewModel.notes, axis: .vertical)
                 
                 Picker("Category", selection: $viewModel.category) {
-                    Text("Favorites").tag("Favorites")
                     Text("Food").tag("Food")
-                    Text("Parks").tag("Parks")
+                    Text("Place").tag("Place")
+                    Text("Date").tag("Date")
                 }
                 
                 PhotoPickerView(selectedPhotoData: $viewModel.selectedPhotoData)

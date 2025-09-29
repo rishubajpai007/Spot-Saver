@@ -17,7 +17,7 @@ struct SpotDetailView: View {
     
     @State private var isEditing = false
     @State private var cameraPosition: MapCameraPosition
-
+    
     init(spot: Spot) {
         self.spot = spot
         _cameraPosition = State(initialValue: .region(MKCoordinateRegion(
@@ -26,7 +26,20 @@ struct SpotDetailView: View {
             longitudinalMeters: 500
         )))
     }
-
+    
+    private var shareableContent: String {
+        let name = spot.name
+        let notes = spot.notes.isEmpty ? "" : "\n\nNotes: \(spot.notes)"
+        let mapLink = "http://maps.apple.com/?ll=\(spot.latitude),\(spot.longitude)"
+        
+        return """
+           Check out this spot: \(name)!
+           \(notes)
+           
+           Find it on a map: \(mapLink)
+           """
+    }
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
@@ -61,7 +74,7 @@ struct SpotDetailView: View {
                                 .foregroundStyle(Color("SecondaryText"))
                         }
                     }
-
+                    
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Location")
                             .font(.title2)
@@ -82,6 +95,17 @@ struct SpotDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
+                ShareLink(item: shareableContent) {
+                    Label("Share", systemImage: "square.and.arrow.up")
+                }
+                
+                Button {
+                    spot.isFavorite.toggle()
+                } label: {
+                    Label("Favorite", systemImage: spot.isFavorite ? "star.fill" : "star")
+                }
+                .tint(.yellow)
+                
                 Button("Edit") {
                     isEditing = true
                 }
@@ -118,7 +142,6 @@ extension CLLocationCoordinate2D: Equatable {
     }
 }
 
-// This is the new helper view for the styled tags
 struct InfoTagView: View {
     let text: String
     let iconName: String
