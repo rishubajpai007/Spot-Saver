@@ -12,7 +12,6 @@ import CoreLocation
 struct EditSpotView: View {
     @Bindable var spot: Spot
     @Environment(\.dismiss) private var dismiss
-    
     @State private var location: CLLocationCoordinate2D?
 
     var body: some View {
@@ -23,8 +22,9 @@ struct EditSpotView: View {
                     TextField("Notes", text: $spot.notes, axis: .vertical)
                     
                     Picker("Category", selection: $spot.category) {
-                        Text("Favorites").tag("Favorites")
                         Text("Food").tag("Food")
+                        Text("Place").tag("Place")
+                        Text("Date").tag("Date")
                         Text("Parks").tag("Parks")
                     }
                 }

@@ -12,6 +12,7 @@ struct SpotRowView: View {
 
     var body: some View {
         HStack(spacing: 16) {
+            // MARK: - Image Section
             if let imageData = spot.photo, let uiImage = UIImage(data: imageData) {
                 Image(uiImage: uiImage)
                     .resizable()
@@ -29,26 +30,28 @@ struct SpotRowView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                     .foregroundStyle(.white)
             }
+            
+            // MARK: - Text Section
             VStack(alignment: .leading, spacing: 6) {
                 Text(spot.name)
                     .font(.headline)
                     .fontWeight(.bold)
-                    .foregroundStyle(Color("PrimaryText"))
+                    .foregroundStyle(.primary)
                 
                 Text(spot.category)
                     .font(.subheadline)
                     .fontWeight(.medium)
-                    .foregroundStyle(.accent)
+                    .foregroundStyle(.accent) // Keeps your app's tint color
                 
                 Text(spot.dateAdded.formatted(date: .abbreviated, time: .omitted))
                     .font(.caption)
-                    .foregroundStyle(Color("SecondaryText"))
+                    .foregroundStyle(.secondary)
             }
             
             Spacer()
         }
         .padding()
-        .background(Color("CardBackground"))
+        .background(Color(uiColor: .secondarySystemGroupedBackground))
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 4)
     }

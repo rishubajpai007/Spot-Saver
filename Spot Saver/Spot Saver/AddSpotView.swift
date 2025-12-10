@@ -4,6 +4,7 @@
 //
 //  Created by Rishu Bajpai on 25/09/25.
 //
+
 import SwiftUI
 import PhotosUI
 import SwiftData
@@ -18,17 +19,25 @@ struct AddSpotView: View {
     var body: some View {
         NavigationStack {
             Form {
-                TextField("Name", text: $viewModel.name)
-                TextField("Notes", text: $viewModel.notes, axis: .vertical)
-                
-                Picker("Category", selection: $viewModel.category) {
-                    Text("Food").tag("Food")
-                    Text("Place").tag("Place")
-                    Text("Date").tag("Date")
+                Section("Details") {
+                    TextField("Name", text: $viewModel.name)
+                    TextField("Notes", text: $viewModel.notes, axis: .vertical)
+                    
+                    Picker("Category", selection: $viewModel.category) {
+                        Text("Food").tag("Food")
+                        Text("Place").tag("Place")
+                        Text("Date").tag("Date")
+                        Text("Parks").tag("Parks")
+                    }
                 }
                 
-                PhotoPickerView(selectedPhotoData: $viewModel.selectedPhotoData)
-                LocationPickerView(location: $viewModel.location)
+                Section("Photo") {
+                    PhotoPickerView(selectedPhotoData: $viewModel.selectedPhotoData)
+                }
+                
+                Section("Location") {
+                    LocationPickerView(location: $viewModel.location)
+                }
             }
             .navigationTitle("New Spot")
             .toolbar {
@@ -53,7 +62,6 @@ struct AddSpotView: View {
     
     private func saveSpot() {
         if let newSpot = viewModel.createSpot() {
-            // Pass the newly created spot back to the parent view.
             onSave(newSpot)
             dismiss()
         }

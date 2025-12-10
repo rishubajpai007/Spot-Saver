@@ -27,7 +27,7 @@ struct FavoritesListView: View {
             .onDelete(perform: deleteSpots)
         }
         .listStyle(.plain)
-        .background(Color("AppBackground"))
+        .background(Color(uiColor: .systemGroupedBackground))
         .navigationTitle("Favorites")
         .overlay {
             if favoriteSpots.isEmpty {

@@ -33,30 +33,41 @@ struct SpotDetailView: View {
         let mapLink = "http://maps.apple.com/?ll=\(spot.latitude),\(spot.longitude)"
         
         return """
-           Check out this spot: \(name)!
-           \(notes)
-           
-           Find it on a map: \(mapLink)
-           """
+        Check out this spot: \(name)!
+        \(notes)
+        
+        Find it on a map: \(mapLink)
+        """
     }
     
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
+                // MARK: - Hero Image
                 if let imageData = spot.photo, let uiImage = UIImage(data: imageData) {
                     Image(uiImage: uiImage)
                         .resizable()
                         .scaledToFill()
                         .frame(height: 300)
                         .clipped()
+                } else {
+                    // Fallback gradient
+                    LinearGradient(colors: [.blue.opacity(0.3), .purple.opacity(0.3)], startPoint: .topLeading, endPoint: .bottomTrailing)
+                        .frame(height: 200)
+                        .overlay {
+                            Image(systemName: "mappin.and.ellipse")
+                                .font(.system(size: 60))
+                                .foregroundStyle(.secondary)
+                        }
                 }
                 
-                VStack(alignment: .leading, spacing: 20) {
-                    VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 24) {
+                    // MARK: - Header
+                    VStack(alignment: .leading, spacing: 12) {
                         Text(spot.name)
                             .font(.largeTitle)
                             .fontWeight(.bold)
-                            .foregroundStyle(Color("PrimaryText"))
+                            .foregroundStyle(.primary)
                         
                         HStack {
                             InfoTagView(text: spot.category, iconName: "tag.fill")
@@ -64,34 +75,51 @@ struct SpotDetailView: View {
                         }
                     }
                     
+                    // MARK: - Notes Section
                     if !spot.notes.isEmpty {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Notes")
                                 .font(.title2)
                                 .fontWeight(.semibold)
-                                .foregroundStyle(Color("PrimaryText"))
+                                .foregroundStyle(.primary)
                             Text(spot.notes)
-                                .foregroundStyle(Color("SecondaryText"))
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
                     }
                     
-                    VStack(alignment: .leading, spacing: 8) {
+                    // MARK: - Location Section
+                    VStack(alignment: .leading, spacing: 12) {
                         Text("Location")
                             .font(.title2)
                             .fontWeight(.semibold)
-                            .foregroundStyle(Color("PrimaryText"))
+                            .foregroundStyle(.primary)
                         
                         Map(position: $cameraPosition) {
                             Marker(spot.name, coordinate: spot.coordinate)
                         }
                         .frame(height: 250)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .shadow(radius: 2)
+                        
+                        // MARK: - Get Directions Button (FIXED)
+                        Button(action: openDirections) {
+                            HStack {
+                                Image(systemName: "car.fill")
+                                Text("Get Directions")
+                            }
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 4)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(.blue)
                     }
                 }
-                .padding(.horizontal,30)
+                .padding(24)
             }
         }
-        .background(Color("AppBackground"))
+        .background(Color(uiColor: .systemBackground))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
@@ -106,14 +134,15 @@ struct SpotDetailView: View {
                 }
                 .tint(.yellow)
                 
-                Button("Edit") {
-                    isEditing = true
-                }
-                
-                Button(role: .destructive) {
-                    deleteSpot()
+                Menu {
+                    Button("Edit", systemImage: "pencil") {
+                        isEditing = true
+                    }
+                    Button("Delete", systemImage: "trash", role: .destructive) {
+                        deleteSpot()
+                    }
                 } label: {
-                    Label("Delete", systemImage: "trash")
+                    Image(systemName: "ellipsis.circle")
                 }
             }
         }
@@ -129,13 +158,24 @@ struct SpotDetailView: View {
         }
     }
     
+    // MARK: - Helper Functions
     private func deleteSpot() {
         modelContext.delete(spot)
         dismiss()
     }
+    
+    private func openDirections() {
+        let placemark = MKPlacemark(coordinate: spot.coordinate)
+        let mapItem = MKMapItem(placemark: placemark)
+        mapItem.name = spot.name
+        mapItem.openInMaps(launchOptions: [
+            MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
+        ])
+    }
 }
 
-// This extension is needed for the .onChange modifier
+// MARK: - Extensions & Subviews
+
 extension CLLocationCoordinate2D: Equatable {
     public static func == (lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
         lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
@@ -147,16 +187,16 @@ struct InfoTagView: View {
     let iconName: String
     
     var body: some View {
-        HStack {
+        HStack(spacing: 6) {
             Image(systemName: iconName)
             Text(text)
         }
         .font(.caption)
         .fontWeight(.medium)
-        .padding(.horizontal, 10)
-        .padding(.vertical, 5)
-        .background(Color.accentColor.opacity(0.1))
-        .foregroundStyle(.accent)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
+        .background(Color.blue.opacity(0.1))
+        .foregroundStyle(Color.blue)
         .clipShape(Capsule())
     }
 }
