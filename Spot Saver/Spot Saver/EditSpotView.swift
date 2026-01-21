@@ -21,11 +21,17 @@ struct EditSpotView: View {
                     TextField("Name", text: $spot.name)
                     TextField("Notes", text: $spot.notes, axis: .vertical)
                     
-                    Picker("Category", selection: $spot.category) {
-                        Text("Food").tag("Food")
-                        Text("Place").tag("Place")
-                        Text("Date").tag("Date")
-                        Text("Parks").tag("Parks")
+                    Picker("Category", selection: $spot.category) { 
+                        Text("Food 🍔").tag("Food")
+                        Text("Coffee & Drinks ☕️").tag("Drinks")
+                        Text("Nature & Parks 🌲").tag("Nature")
+                        Text("Shopping 🛍️").tag("Shopping")
+                        Text("Culture & Art 🏛️").tag("Culture")
+                        Text("Nightlife 🍸").tag("Nightlife")
+                        Text("Entertainment 🎬").tag("Entertainment")
+                        Text("Date Spot 💘").tag("Date")
+                        Text("Work & Study 💼").tag("Work")
+                        Text("Other 📍").tag("Other")
                     }
                 }
                 

@@ -2,57 +2,83 @@
 //  SpotRowView.swift
 //  Spot Saver
 //
-//  Created by Rishu Bajpai on 29/09/25.
+//  Created by Rishu Bajpai on 25/09/25.
 //
 
 import SwiftUI
+import CoreLocation
 
 struct SpotRowView: View {
     let spot: Spot
+    var userLocation: CLLocation? = nil
+    
+    var distanceString: String? {
+        guard let userLocation else { return nil }
+        let spotLoc = CLLocation(latitude: spot.latitude, longitude: spot.longitude)
+        let distanceInMeters = userLocation.distance(from: spotLoc)
+        if distanceInMeters < 1000 {
+            return String(format: "%.0f m", distanceInMeters)
+        } else {
+            return String(format: "%.1f km", distanceInMeters / 1000)
+        }
+    }
 
     var body: some View {
         HStack(spacing: 16) {
-            // MARK: - Image Section
             if let imageData = spot.photo, let uiImage = UIImage(data: imageData) {
                 Image(uiImage: uiImage)
                     .resizable()
                     .scaledToFill()
-                    .frame(width: 80, height: 80)
+                    .frame(width: 60, height: 60)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
             } else {
-                Image(systemName: "mappin.and.ellipse")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 40, height: 40)
-                    .padding()
-                    .background(Color(UIColor.systemGray5))
-                    .frame(width: 80, height: 80)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .foregroundStyle(.white)
+                ZStack {
+                    Color.secondary.opacity(0.1)
+                    Image(systemName: "map.fill")
+                        .foregroundStyle(.secondary)
+                }
+                .frame(width: 60, height: 60)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
             }
             
-            // MARK: - Text Section
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text(spot.name)
                     .font(.headline)
-                    .fontWeight(.bold)
                     .foregroundStyle(.primary)
+                    .lineLimit(1)
                 
-                Text(spot.category)
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-                    .foregroundStyle(.accent) // Keeps your app's tint color
-                
-                Text(spot.dateAdded.formatted(date: .abbreviated, time: .omitted))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                HStack {
+                    Text(spot.category)
+                        .font(.caption)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Color.blue.opacity(0.1))
+                        .foregroundStyle(.blue)
+                        .clipShape(Capsule())
+                    
+                    if let distance = distanceString {
+                        HStack(spacing: 2) {
+                            Image(systemName: "location.fill")
+                                .font(.caption2)
+                            Text(distance)
+                                .font(.caption)
+                        }
+                        .foregroundStyle(.secondary)
+                    }
+                    
+                    Spacer()
+                    
+                    if spot.isFavorite {
+                        Image(systemName: "star.fill")
+                            .foregroundStyle(.yellow)
+                            .font(.caption)
+                    }
+                }
             }
-            
-            Spacer()
         }
-        .padding()
+        .padding(12)
         .background(Color(uiColor: .secondarySystemGroupedBackground))
         .clipShape(RoundedRectangle(cornerRadius: 16))
-        .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 4)
+        .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
     }
 }

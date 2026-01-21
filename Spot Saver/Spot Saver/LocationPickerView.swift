@@ -83,6 +83,7 @@ struct LocationPickerView: View {
         .sheet(isPresented: $showSearchSheet) {
             LocationSearchView(searchResults: $searchResults)
                 .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
         }
     }
     

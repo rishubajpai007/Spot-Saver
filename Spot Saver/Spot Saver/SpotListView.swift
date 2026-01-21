@@ -7,12 +7,55 @@
 
 import SwiftUI
 import SwiftData
+import CoreLocation
+
+enum SortOption: String, CaseIterable {
+    case date = "Newest"
+    case distance = "Nearest"
+    case name = "Name"
+}
 
 struct SpotsListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Spot.dateAdded, order: .reverse) private var spots: [Spot]
+    
     @State private var isAddingSpot = false
     @State private var searchText = ""
+    @State private var sortOption: SortOption = .date
+    
+    @StateObject private var locationManager = LocationManager()
+
+    // MARK: - Filtering & Sorting Logic
+    var filteredAndSortedSpots: [Spot] {
+        // 1. Filter by Search Text
+        let filteredSpots: [Spot]
+        if searchText.isEmpty {
+            filteredSpots = spots
+        } else {
+            filteredSpots = spots.filter { spot in
+                spot.name.localizedStandardContains(searchText) ||
+                spot.category.localizedStandardContains(searchText) ||
+                spot.notes.localizedStandardContains(searchText)
+            }
+        }
+        
+        // 2. Sort by Selected Option
+        switch sortOption {
+        case .date:
+            return filteredSpots.sorted { $0.dateAdded > $1.dateAdded }
+            
+        case .name:
+            return filteredSpots.sorted { $0.name < $1.name }
+            
+        case .distance:
+            guard let userLoc = locationManager.currentLocation else { return filteredSpots }
+            return filteredSpots.sorted { spot1, spot2 in
+                let dist1 = userLoc.distance(from: CLLocation(latitude: spot1.latitude, longitude: spot1.longitude))
+                let dist2 = userLoc.distance(from: CLLocation(latitude: spot2.latitude, longitude: spot2.longitude))
+                return dist1 < dist2
+            }
+        }
+    }
 
     var body: some View {
         NavigationStack {
@@ -23,11 +66,15 @@ struct SpotsListView: View {
                         systemImage: "mappin.and.ellipse",
                         description: Text("Tap the '+' button to add your first spot.")
                     )
-                } else {
+                }
+                else if filteredAndSortedSpots.isEmpty && !searchText.isEmpty {
+                    ContentUnavailableView.search(text: searchText)
+                }
+                else {
                     List {
-                        ForEach(searchResults) { spot in
+                        ForEach(filteredAndSortedSpots) { spot in
                             NavigationLink(destination: SpotDetailView(spot: spot)) {
-                                SpotRowView(spot: spot)
+                                SpotRowView(spot: spot, userLocation: locationManager.currentLocation)
                             }
                             .listRowSeparator(.hidden)
                             .listRowBackground(Color.clear)
@@ -40,29 +87,34 @@ struct SpotsListView: View {
             }
             .navigationTitle("Spot Saver")
             .toolbar {
+                // MARK: - Sort Menu
+                ToolbarItem(placement: .topBarLeading) {
+                    Menu {
+                        Picker("Sort By", selection: $sortOption) {
+                            Label("Newest", systemImage: "calendar").tag(SortOption.date)
+                            Label("Nearest", systemImage: "location").tag(SortOption.distance)
+                            Label("Name", systemImage: "textformat").tag(SortOption.name)
+                        }
+                    } label: {
+                        Image(systemName: "arrow.up.arrow.down.circle")
+                            .foregroundStyle(.primary)
+                    }
+                }
+                
                 ToolbarItem(placement: .primaryAction) {
                     Button(action: { isAddingSpot = true }) {
                         Label("Add Spot", systemImage: "plus")
                     }
                 }
             }
-            .searchable(text: $searchText, placement: .navigationBarDrawer, prompt: "Search by name or category")
-        }
-        .sheet(isPresented: $isAddingSpot) {
-            AddSpotView { newSpot in
-                addSpot(spot: newSpot)
+            .searchable(text: $searchText, placement: .navigationBarDrawer, prompt: "Search name, category...")
+            .sheet(isPresented: $isAddingSpot) {
+                AddSpotView { newSpot in
+                    addSpot(spot: newSpot)
+                }
             }
-        }
-    }
-
-    var searchResults: [Spot] {
-        if searchText.isEmpty {
-            return spots
-        } else {
-            return spots.filter { spot in
-                let nameMatch = spot.name.localizedStandardContains(searchText)
-                let categoryMatch = spot.category.localizedStandardContains(searchText)
-                return nameMatch || categoryMatch
+            .onAppear {
+                locationManager.checkLocationAuthorization()
             }
         }
     }
@@ -74,7 +126,8 @@ struct SpotsListView: View {
     private func deleteSpots(offsets: IndexSet) {
         withAnimation {
             for index in offsets {
-                modelContext.delete(spots[index])
+                let spotToDelete = filteredAndSortedSpots[index]
+                modelContext.delete(spotToDelete)
             }
         }
     }
