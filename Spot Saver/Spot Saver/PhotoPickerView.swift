@@ -10,63 +10,108 @@ import PhotosUI
 
 struct PhotoPickerView: View {
     @Binding var selectedPhotoData: Data?
-    @State private var selectedItem: PhotosPickerItem?
-
+    
+    // Internal State
+    @State private var selectedItem: PhotosPickerItem? = nil
+    @State private var showCamera = false
+    @State private var displayImage: UIImage? = nil
+    
     var body: some View {
-        PhotosPicker(selection: $selectedItem, matching: .images) {
-            if let selectedPhotoData, let uiImage = UIImage(data: selectedPhotoData) {
+        VStack {
+            if let displayImage {
                 // MARK: - State 1: Photo Selected
-                HStack {
-                    Image(uiImage: uiImage)
+                ZStack(alignment: .topTrailing) {
+                    Image(uiImage: displayImage)
                         .resizable()
                         .scaledToFill()
-                        .frame(width: 80, height: 80)
+                        .frame(height: 200)
+                        .frame(maxWidth: .infinity)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
-                        )
                     
-                    VStack(alignment: .leading) {
-                        Text("Photo Added")
-                            .font(.headline)
-                            .foregroundStyle(.primary)
-                        Text("Tap to change")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                    // Remove Button
+                    Button(action: removePhoto) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.title)
+                            .foregroundStyle(.white)
+                            .shadow(radius: 2)
+                            .padding(8)
                     }
                 }
             } else {
-                // MARK: - State 2: Empty Placeholder
-                HStack {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color(uiColor: .secondarySystemBackground))
-                            .frame(width: 80, height: 80)
-                        
-                        Image(systemName: "camera.fill")
-                            .font(.title2)
-                            .foregroundStyle(.tint)
+                // MARK: - State 2: Empty (Choose Source)
+                HStack(spacing: 12) {
+                    // Option A: Camera Button
+                    Button(action: { showCamera = true }) {
+                        VStack {
+                            Image(systemName: "camera.fill")
+                                .font(.title2)
+                            Text("Camera")
+                                .font(.caption)
+                                .fontWeight(.medium)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 80)
+                        .background(Color.blue.opacity(0.1))
+                        .foregroundStyle(.blue)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
                     }
                     
-                    Text("Add Photo")
-                        .font(.headline)
-                        .foregroundStyle(.tint)
+                    // Option B: Gallery Button (PhotosPicker)
+                    PhotosPicker(selection: $selectedItem, matching: .images) {
+                        VStack {
+                            Image(systemName: "photo.on.rectangle")
+                                .font(.title2)
+                            Text("Gallery")
+                                .font(.caption)
+                                .fontWeight(.medium)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 80)
+                        .background(Color.secondary.opacity(0.1))
+                        .foregroundStyle(.primary)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                    }
                 }
             }
         }
-        .buttonStyle(.plain)
+        // Load image if editing existing spot
+        .onAppear {
+            if let selectedPhotoData, let image = UIImage(data: selectedPhotoData) {
+                self.displayImage = image
+            }
+        }
+        // Handle Gallery Selection
         .onChange(of: selectedItem) {
             Task {
-                if let data = try? await selectedItem?.loadTransferable(type: Data.self) {
-                    if let uiImage = UIImage(data: data),
-                       let compressedData = uiImage.jpegData(compressionQuality: 0.7) {
-                        selectedPhotoData = compressedData
-                    } else {
-                        selectedPhotoData = data
+                if let data = try? await selectedItem?.loadTransferable(type: Data.self),
+                   let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        self.displayImage = image
+                        self.selectedPhotoData = data
                     }
                 }
             }
+        }
+        // Handle Camera Selection
+        .sheet(isPresented: $showCamera) {
+            CameraView(selectedImage: Binding(
+                get: { displayImage },
+                set: { newImage in
+                    if let newImage {
+                        self.displayImage = newImage
+                        // Compress heavily to save storage space
+                        self.selectedPhotoData = newImage.jpegData(compressionQuality: 0.6)
+                    }
+                }
+            ))
+        }
+    }
+    
+    private func removePhoto() {
+        withAnimation {
+            self.selectedPhotoData = nil
+            self.displayImage = nil
+            self.selectedItem = nil
         }
     }
 }

@@ -82,7 +82,7 @@ struct LocationPickerView: View {
         // MARK: - 3. The Search Sheet
         .sheet(isPresented: $showSearchSheet) {
             LocationSearchView(searchResults: $searchResults)
-                .presentationDetents([.medium, .large])
+                .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
         }
     }

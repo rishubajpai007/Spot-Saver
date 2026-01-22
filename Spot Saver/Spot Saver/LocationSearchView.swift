@@ -59,7 +59,7 @@ struct LocationSearchView: View {
             locationService.update(queryFragment: search)
         }
         .padding()
-        .presentationDetents([.medium, .large])
+        .presentationDetents([.large])
         .presentationBackground(.regularMaterial)
         .presentationBackgroundInteraction(.enabled(upThrough: .large))
     }
