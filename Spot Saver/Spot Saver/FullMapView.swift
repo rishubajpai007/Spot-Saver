@@ -16,6 +16,21 @@ struct FullMapView: View {
     @State private var selectedSpot: Spot?
     @State private var position: MapCameraPosition = .userLocation(fallback: .automatic)
     
+    private func fitAllSpots() {
+        guard !spots.isEmpty else { return }
+        // Build a region that fits all coordinates with a small padding span
+        let lats = spots.map { $0.coordinate.latitude }
+        let lons = spots.map { $0.coordinate.longitude }
+        guard let minLat = lats.min(), let maxLat = lats.max(), let minLon = lons.min(), let maxLon = lons.max() else { return }
+        // Add a small padding (~10%)
+        let latDelta = max((maxLat - minLat) * 1.1, 0.005)
+        let lonDelta = max((maxLon - minLon) * 1.1, 0.005)
+        let center = CLLocationCoordinate2D(latitude: (minLat + maxLat) / 2.0, longitude: (minLon + maxLon) / 2.0)
+        let span = MKCoordinateSpan(latitudeDelta: latDelta, longitudeDelta: lonDelta)
+        let region = MKCoordinateRegion(center: center, span: span)
+        position = .region(region)
+    }
+    
     var body: some View {
         Map(position: $position, selection: $selectedSpot) {
             
@@ -37,6 +52,20 @@ struct FullMapView: View {
         }
         .mapStyle(.standard(elevation: .realistic))
         .navigationTitle("All Spots Map")
+        .onAppear {
+            DispatchQueue.main.async {
+                withAnimation(.easeInOut(duration: 0.25)) {
+                    fitAllSpots()
+                }
+            }
+        }
+        .onChange(of: spots) { _ in
+            DispatchQueue.main.async {
+                withAnimation(.easeInOut(duration: 0.25)) {
+                    fitAllSpots()
+                }
+            }
+        }
         .sheet(item: $selectedSpot) { spot in
             NavigationStack {
                 SpotDetailView(spot: spot)
