@@ -41,7 +41,7 @@ struct AddSpotView: View {
                 
                 // MARK: - Photo Section
                 Section("Photo") {
-                    PhotoPickerView(selectedPhotoData: $viewModel.selectedPhotoData)
+                    PhotoPickerView(selectedPhotosData: $viewModel.selectedPhotosData)
                 }
                 
                 // MARK: - Location Section

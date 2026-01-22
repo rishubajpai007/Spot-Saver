@@ -36,7 +36,7 @@ struct EditSpotView: View {
                 }
                 
                 Section("Photo") {
-                    PhotoPickerView(selectedPhotoData: $spot.photo)
+                    PhotoPickerView(selectedPhotosData: $spot.photos)
                 }
 
                 Section("Location") {

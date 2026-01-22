@@ -2,116 +2,116 @@
 //  PhotoPickerView.swift
 //  Spot Saver
 //
-//  Created by Rishu Bajpai on 25/09/25.
-//
 
 import SwiftUI
 import PhotosUI
 
 struct PhotoPickerView: View {
-    @Binding var selectedPhotoData: Data?
-    
-    // Internal State
-    @State private var selectedItem: PhotosPickerItem? = nil
+    @Binding var selectedPhotosData: [Data]
+
+    @State private var selectedItems: [PhotosPickerItem] = []
+    @State private var displayImages: [UIImage] = []
+
     @State private var showCamera = false
-    @State private var displayImage: UIImage? = nil
-    
+    @State private var cameraCapturedImage: UIImage?
+
     var body: some View {
-        VStack {
-            if let displayImage {
-                // MARK: - State 1: Photo Selected
-                ZStack(alignment: .topTrailing) {
-                    Image(uiImage: displayImage)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(height: 200)
-                        .frame(maxWidth: .infinity)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                    
-                    // Remove Button
-                    Button(action: removePhoto) {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.title)
-                            .foregroundStyle(.white)
-                            .shadow(radius: 2)
-                            .padding(8)
-                    }
+        VStack(alignment: .leading, spacing: 12) {
+
+            HStack(spacing: 12) {
+                Button {
+                    showCamera = true
+                } label: {
+                    sourceTile(
+                        icon: "camera.fill",
+                        title: "Camera",
+                        color: .blue
+                    )
                 }
-            } else {
-                // MARK: - State 2: Empty (Choose Source)
-                HStack(spacing: 12) {
-                    // Option A: Camera Button
-                    Button(action: { showCamera = true }) {
-                        VStack {
-                            Image(systemName: "camera.fill")
-                                .font(.title2)
-                            Text("Camera")
-                                .font(.caption)
-                                .fontWeight(.medium)
+                .fullScreenCover(isPresented: $showCamera) {
+                    CameraView(selectedImage: $cameraCapturedImage)
+                }
+
+                PhotosPicker(
+                    selection: $selectedItems,
+                    maxSelectionCount: 10,
+                    matching: .images
+                ) {
+                    sourceTile(
+                        icon: "photo.on.rectangle",
+                        title: "Gallery",
+                        color: .secondary
+                    )
+                }
+            }
+
+            if !displayImages.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 12) {
+                        ForEach(Array(displayImages.enumerated()), id: \.offset) { index, image in
+                            ZStack(alignment: .topTrailing) {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 120, height: 120)
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+
+                                Button {
+                                    removePhoto(at: index)
+                                } label: {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundStyle(.white)
+                                        .padding(6)
+                                }
+                            }
                         }
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 80)
-                        .background(Color.blue.opacity(0.1))
-                        .foregroundStyle(.blue)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                    }
-                    
-                    // Option B: Gallery Button (PhotosPicker)
-                    PhotosPicker(selection: $selectedItem, matching: .images) {
-                        VStack {
-                            Image(systemName: "photo.on.rectangle")
-                                .font(.title2)
-                            Text("Gallery")
-                                .font(.caption)
-                                .fontWeight(.medium)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 80)
-                        .background(Color.secondary.opacity(0.1))
-                        .foregroundStyle(.primary)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
                     }
                 }
             }
         }
-        // Load image if editing existing spot
         .onAppear {
-            if let selectedPhotoData, let image = UIImage(data: selectedPhotoData) {
-                self.displayImage = image
-            }
+            displayImages = selectedPhotosData.compactMap { UIImage(data: $0) }
         }
-        // Handle Gallery Selection
-        .onChange(of: selectedItem) {
+        .onChange(of: selectedItems) {
             Task {
-                if let data = try? await selectedItem?.loadTransferable(type: Data.self),
-                   let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        self.displayImage = image
-                        self.selectedPhotoData = data
+                for item in selectedItems {
+                    if let data = try? await item.loadTransferable(type: Data.self),
+                       let image = UIImage(data: data) {
+                        displayImages.append(image)
+                        selectedPhotosData.append(data)
                     }
                 }
+                selectedItems.removeAll()
             }
         }
-        // Handle Camera Selection
-        .sheet(isPresented: $showCamera) {
-            CameraView(selectedImage: Binding(
-                get: { displayImage },
-                set: { newImage in
-                    if let newImage {
-                        self.displayImage = newImage
-                        // Compress heavily to save storage space
-                        self.selectedPhotoData = newImage.jpegData(compressionQuality: 0.6)
-                    }
-                }
-            ))
+        .onChange(of: cameraCapturedImage) {
+            if let img = cameraCapturedImage,
+               let data = img.jpegData(compressionQuality: 0.6) {
+                displayImages.append(img)
+                selectedPhotosData.append(data)
+            }
+            cameraCapturedImage = nil
         }
     }
-    
-    private func removePhoto() {
-        withAnimation {
-            self.selectedPhotoData = nil
-            self.displayImage = nil
-            self.selectedItem = nil
+
+    // MARK: - UI Helper
+    private func sourceTile(icon: String, title: String, color: Color) -> some View {
+        VStack {
+            Image(systemName: icon).font(.title2)
+            Text(title).font(.caption).fontWeight(.medium)
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 80)
+        .background(color.opacity(0.1))
+        .foregroundStyle(color)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+
+    private func removePhoto(at index: Int) {
+        guard displayImages.indices.contains(index) else { return }
+        displayImages.remove(at: index)
+        if selectedPhotosData.indices.contains(index) {
+            selectedPhotosData.remove(at: index)
         }
     }
 }

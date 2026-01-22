@@ -15,11 +15,8 @@ import PhotosUI
 class AddSpotViewModel: ObservableObject {
     @Published var name = ""
     @Published var notes = ""
-    
-    // FIX: Changed default from "Favorites" to "Other"
     @Published var category = "Other"
-    
-    @Published var selectedPhotoData: Data?
+    @Published var selectedPhotosData: [Data] = []
     @Published var location: CLLocationCoordinate2D?
 
     var isFormValid: Bool {
@@ -38,7 +35,8 @@ class AddSpotViewModel: ObservableObject {
             category: category,
             latitude: location.latitude,
             longitude: location.longitude,
-            photo: selectedPhotoData
+            photos: selectedPhotosData
         )
     }
 }
+

@@ -43,15 +43,22 @@ struct SpotDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                // MARK: - Hero Image
-                if let imageData = spot.photo, let uiImage = UIImage(data: imageData) {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(height: 300)
-                        .clipped()
+                // MARK: - Hero Images
+                if !spot.photos.isEmpty {
+                    TabView {
+                        ForEach(Array(spot.photos.enumerated()), id: \.offset) { _, data in
+                            if let uiImage = UIImage(data: data) {
+                                Image(uiImage: uiImage)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(height: 300)
+                                    .clipped()
+                            }
+                        }
+                    }
+                    .tabViewStyle(.page(indexDisplayMode: .automatic))
+                    .frame(height: 300)
                 } else {
-                    // Fallback gradient
                     LinearGradient(colors: [.blue.opacity(0.3), .purple.opacity(0.3)], startPoint: .topLeading, endPoint: .bottomTrailing)
                         .frame(height: 200)
                         .overlay {
