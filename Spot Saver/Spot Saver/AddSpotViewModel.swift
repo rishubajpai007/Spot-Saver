@@ -4,15 +4,21 @@
 //
 //  Created by Rishu Bajpai on 25/09/25.
 //
+
 import SwiftUI
 import CoreLocation
 import Combine
+import PhotosUI
 
+// MARK: - View Model
 @MainActor
 class AddSpotViewModel: ObservableObject {
     @Published var name = ""
     @Published var notes = ""
-    @Published var category = "Favorites" // Default category
+    
+    // FIX: Changed default from "Favorites" to "Other"
+    @Published var category = "Other"
+    
     @Published var selectedPhotoData: Data?
     @Published var location: CLLocationCoordinate2D?
 

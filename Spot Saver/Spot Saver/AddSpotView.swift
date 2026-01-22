@@ -6,8 +6,9 @@
 //
 
 import SwiftUI
+import CoreLocation
+import Combine
 import PhotosUI
-import SwiftData
 
 struct AddSpotView: View {
     var onSave: (Spot) -> Void
@@ -19,11 +20,12 @@ struct AddSpotView: View {
     var body: some View {
         NavigationStack {
             Form {
+                // MARK: - Details Section
                 Section("Details") {
                     TextField("Name", text: $viewModel.name)
                     TextField("Notes", text: $viewModel.notes, axis: .vertical)
                     
-                    Picker("Category", selection: $viewModel.category) { 
+                    Picker("Category", selection: $viewModel.category) {
                         Text("Food 🍔").tag("Food")
                         Text("Coffee & Drinks ☕️").tag("Drinks")
                         Text("Nature & Parks 🌲").tag("Nature")
@@ -37,10 +39,12 @@ struct AddSpotView: View {
                     }
                 }
                 
+                // MARK: - Photo Section
                 Section("Photo") {
                     PhotoPickerView(selectedPhotoData: $viewModel.selectedPhotoData)
                 }
                 
+                // MARK: - Location Section
                 Section("Location") {
                     LocationPickerView(location: $viewModel.location)
                 }
@@ -55,9 +59,9 @@ struct AddSpotView: View {
                         .disabled(!viewModel.isFormValid)
                 }
             }
-            .onAppear(perform: {
+            .onAppear {
                 locationManager.checkLocationAuthorization()
-            })
+            }
             .onReceive(locationManager.$currentLocation) { location in
                 if let location, viewModel.location == nil {
                     viewModel.location = location.coordinate
@@ -73,3 +77,4 @@ struct AddSpotView: View {
         }
     }
 }
+
