@@ -15,15 +15,32 @@ struct AddSpotView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = AddSpotViewModel()
     @StateObject private var locationManager = LocationManager()
+    @FocusState private var focusedField: Field?
+    private enum Field { case name, notes }
 
     var body: some View {
         NavigationStack {
             Form {
                 Section("Details") {
                     TextField("Name", text: $viewModel.name)
-                    TextField("Notes", text: $viewModel.notes, axis: .vertical)
+                        .focused($focusedField, equals: .name)
+                        .submitLabel(.next)
+                        .onSubmit { focusedField = .notes }
+                    VStack(alignment: .leading, spacing: 4) {
+                        TextField("Notes", text: $viewModel.notes, axis: .vertical)
+                            .focused($focusedField, equals: .notes)
+                            .onChange(of: viewModel.notes) { oldValue, newValue in
+                                if newValue.allSatisfy({ $0.isWhitespace || $0.isNewline }) {
+                                    viewModel.notes = ""
+                                }
+                            }
+                            .onSubmit {
+                                viewModel.notes = viewModel.notes.trimmingCharacters(in: .whitespacesAndNewlines)
+                                focusedField = nil
+                            }
+                    }
                     
-                    Picker("Category", selection: $viewModel.category) { 
+                    Picker("Category", selection: $viewModel.category) {
                         Text("Food 🍔").tag("Food")
                         Text("Coffee & Drinks ☕️").tag("Drinks")
                         Text("Nature & Parks 🌲").tag("Nature")
@@ -47,6 +64,13 @@ struct AddSpotView: View {
             }
             .navigationTitle("New Spot")
             .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") {
+                        viewModel.notes = viewModel.notes.trimmingCharacters(in: .whitespacesAndNewlines)
+                        focusedField = nil
+                    }
+                }
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
                 }
