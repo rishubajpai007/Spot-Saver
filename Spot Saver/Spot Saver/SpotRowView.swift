@@ -25,7 +25,7 @@ struct SpotRowView: View {
 
     var body: some View {
         HStack(spacing: 16) {
-            if let imageData = spot.photo, let uiImage = UIImage(data: imageData) {
+            if let imageData = spot.photos.first, let uiImage = UIImage(data: imageData) {
                 Image(uiImage: uiImage)
                     .resizable()
                     .scaledToFill()
@@ -82,3 +82,4 @@ struct SpotRowView: View {
         .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
     }
 }
+

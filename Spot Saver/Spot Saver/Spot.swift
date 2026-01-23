@@ -17,18 +17,18 @@ final class Spot : CustomStringConvertible,Hashable {
     var category: String
     var latitude: Double
     var longitude: Double
-    @Attribute(.externalStorage) var photo: Data?
+    @Attribute(.externalStorage) var photos: [Data]
     var dateAdded: Date
     var isFavorite: Bool
     
-    init(name: String, notes: String, category: String, latitude: Double, longitude: Double, photo: Data? = nil, isFavorite: Bool = false) {
+    init(name: String, notes: String, category: String, latitude: Double, longitude: Double, photos: [Data] = [], isFavorite: Bool = false) {
         self.id = UUID()
         self.name = name
         self.notes = notes
         self.category = category
         self.latitude = latitude
         self.longitude = longitude
-        self.photo = photo
+        self.photos = photos
         self.dateAdded = .now
         self.isFavorite = isFavorite
     }

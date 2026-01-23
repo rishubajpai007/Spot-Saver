@@ -2,71 +2,116 @@
 //  PhotoPickerView.swift
 //  Spot Saver
 //
-//  Created by Rishu Bajpai on 25/09/25.
-//
 
 import SwiftUI
 import PhotosUI
 
 struct PhotoPickerView: View {
-    @Binding var selectedPhotoData: Data?
-    @State private var selectedItem: PhotosPickerItem?
+    @Binding var selectedPhotosData: [Data]
+
+    @State private var selectedItems: [PhotosPickerItem] = []
+    @State private var displayImages: [UIImage] = []
+
+    @State private var showCamera = false
+    @State private var cameraCapturedImage: UIImage?
 
     var body: some View {
-        PhotosPicker(selection: $selectedItem, matching: .images) {
-            if let selectedPhotoData, let uiImage = UIImage(data: selectedPhotoData) {
-                // MARK: - State 1: Photo Selected
-                HStack {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 80, height: 80)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
-                        )
-                    
-                    VStack(alignment: .leading) {
-                        Text("Photo Added")
-                            .font(.headline)
-                            .foregroundStyle(.primary)
-                        Text("Tap to change")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
+        VStack(alignment: .leading, spacing: 12) {
+
+            HStack(spacing: 12) {
+                Button {
+                    showCamera = true
+                } label: {
+                    sourceTile(
+                        icon: "camera.fill",
+                        title: "Camera",
+                        color: .blue
+                    )
                 }
-            } else {
-                // MARK: - State 2: Empty Placeholder
-                HStack {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color(uiColor: .secondarySystemBackground))
-                            .frame(width: 80, height: 80)
-                        
-                        Image(systemName: "camera.fill")
-                            .font(.title2)
-                            .foregroundStyle(.tint)
+                .fullScreenCover(isPresented: $showCamera) {
+                    CameraView(selectedImage: $cameraCapturedImage)
+                }
+
+                PhotosPicker(
+                    selection: $selectedItems,
+                    maxSelectionCount: 10,
+                    matching: .images
+                ) {
+                    sourceTile(
+                        icon: "photo.on.rectangle",
+                        title: "Gallery",
+                        color: .secondary
+                    )
+                }
+            }
+
+            if !displayImages.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 12) {
+                        ForEach(Array(displayImages.enumerated()), id: \.offset) { index, image in
+                            ZStack(alignment: .topTrailing) {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 120, height: 120)
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+
+                                Button {
+                                    removePhoto(at: index)
+                                } label: {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundStyle(.white)
+                                        .padding(6)
+                                }
+                            }
+                        }
                     }
-                    
-                    Text("Add Photo")
-                        .font(.headline)
-                        .foregroundStyle(.tint)
                 }
             }
         }
-        .buttonStyle(.plain)
-        .onChange(of: selectedItem) {
+        .onAppear {
+            displayImages = selectedPhotosData.compactMap { UIImage(data: $0) }
+        }
+        .onChange(of: selectedItems) {
             Task {
-                if let data = try? await selectedItem?.loadTransferable(type: Data.self) {
-                    if let uiImage = UIImage(data: data),
-                       let compressedData = uiImage.jpegData(compressionQuality: 0.7) {
-                        selectedPhotoData = compressedData
-                    } else {
-                        selectedPhotoData = data
+                for item in selectedItems {
+                    if let data = try? await item.loadTransferable(type: Data.self),
+                       let image = UIImage(data: data) {
+                        displayImages.append(image)
+                        selectedPhotosData.append(data)
                     }
                 }
+                selectedItems.removeAll()
             }
+        }
+        .onChange(of: cameraCapturedImage) {
+            if let img = cameraCapturedImage,
+               let data = img.jpegData(compressionQuality: 0.6) {
+                displayImages.append(img)
+                selectedPhotosData.append(data)
+            }
+            cameraCapturedImage = nil
+        }
+    }
+
+    // MARK: - UI Helper
+    private func sourceTile(icon: String, title: String, color: Color) -> some View {
+        VStack {
+            Image(systemName: icon).font(.title2)
+            Text(title).font(.caption).fontWeight(.medium)
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 80)
+        .background(color.opacity(0.1))
+        .foregroundStyle(color)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+
+    private func removePhoto(at index: Int) {
+        guard displayImages.indices.contains(index) else { return }
+        displayImages.remove(at: index)
+        if selectedPhotosData.indices.contains(index) {
+            selectedPhotosData.remove(at: index)
         }
     }
 }
