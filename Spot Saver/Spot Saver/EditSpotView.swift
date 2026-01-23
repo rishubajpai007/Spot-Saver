@@ -10,11 +10,13 @@ import CoreLocation
 struct EditSpotView: View {
     @Bindable var spot: Spot
     @Environment(\.dismiss) private var dismiss
-    
+
     @State private var location: CLLocationCoordinate2D?
     @State private var showValidationError = false
     @State private var validationMessage = ""
     @State private var attemptedSave = false
+    @FocusState private var focusedField: Field?
+    private enum Field { case name, notes }
 
     var body: some View {
         NavigationStack {
@@ -23,18 +25,32 @@ struct EditSpotView: View {
                 Section {
                     VStack(alignment: .leading, spacing: 4) {
                         TextField("Name", text: $spot.name)
+                            .focused($focusedField, equals: .name)
                             .submitLabel(.next)
-                        
+                            .onSubmit {
+                                focusedField = .notes
+                            }
+
                         if attemptedSave && spot.name.trimmingCharacters(in: .whitespaces).isEmpty {
                             Text("A name is required to save this spot.")
                                 .font(.caption)
                                 .foregroundColor(.red)
                         }
                     }
-                    
+
                     TextField("Notes (Optional)", text: $spot.notes, axis: .vertical)
+                        .focused($focusedField, equals: .notes)
                         .lineLimit(3...10)
-                    
+                        .onChange(of: spot.notes) { _, newValue in
+                            if newValue.allSatisfy({ $0.isWhitespace || $0.isNewline }) {
+                                spot.notes = ""
+                            }
+                        }
+                        .onSubmit {
+                            spot.notes = spot.notes.trimmingCharacters(in: .whitespacesAndNewlines)
+                            focusedField = nil
+                        }
+
                     Picker("Category", selection: $spot.category) {
                         Text("Food 🍔").tag("Food")
                         Text("Coffee & Drinks ☕️").tag("Drinks")
@@ -54,7 +70,7 @@ struct EditSpotView: View {
                 // MARK: - Photos
                 Section {
                     PhotoPickerView(selectedPhotosData: $spot.photos)
-                    
+
                     if attemptedSave && spot.photos.isEmpty {
                         Text("At least one photo is recommended.")
                             .font(.caption)
@@ -67,7 +83,7 @@ struct EditSpotView: View {
                 // MARK: - Location
                 Section {
                     LocationPickerView(location: $location)
-                    
+
                     if attemptedSave && location == nil {
                         HStack {
                             Image(systemName: "exclamationmark.triangle.fill")
@@ -90,12 +106,20 @@ struct EditSpotView: View {
             }
             .navigationTitle("Edit Spot")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarRole(.editor)
             .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") {
+                        spot.notes = spot.notes.trimmingCharacters(in: .whitespacesAndNewlines)
+                        focusedField = nil
+                    }
+                }
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") {
+                    Button("Save") {
                         validateAndSave()
                     }
                     .fontWeight(.bold)
@@ -111,27 +135,27 @@ struct EditSpotView: View {
             }
         }
     }
-    
+
     private func validateAndSave() {
         attemptedSave = true
-        
+
         if spot.name.trimmingCharacters(in: .whitespaces).isEmpty {
             validationMessage = "Please provide a name for your spot."
             showValidationError = true
             return
         }
-        
+
         if location == nil {
             validationMessage = "Location is missing. Please select a location."
             showValidationError = true
             return
         }
-        
+
         if let location {
             spot.latitude = location.latitude
             spot.longitude = location.longitude
         }
-        
+
         dismiss()
     }
 }

@@ -26,7 +26,7 @@ struct AddSpotView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Details") {
+                Section {
                   VStack(alignment: .leading, spacing: 4) {
                         TextField("Name", text: $viewModel.name)
                             .focused($focusedField, equals: .name)

@@ -19,19 +19,6 @@ struct PhotoPickerView: View {
         VStack(alignment: .leading, spacing: 12) {
 
             HStack(spacing: 12) {
-                Button {
-                    showCamera = true
-                } label: {
-                    sourceTile(
-                        icon: "camera.fill",
-                        title: "Camera",
-                        color: .blue
-                    )
-                }
-                .fullScreenCover(isPresented: $showCamera) {
-                    CameraView(selectedImage: $cameraCapturedImage)
-                }
-
                 PhotosPicker(
                     selection: $selectedItems,
                     maxSelectionCount: 10,
