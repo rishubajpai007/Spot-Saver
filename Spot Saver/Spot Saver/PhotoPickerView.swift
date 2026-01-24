@@ -12,25 +12,8 @@ struct PhotoPickerView: View {
     @State private var selectedItems: [PhotosPickerItem] = []
     @State private var displayImages: [UIImage] = []
 
-    @State private var showCamera = false
-    @State private var cameraCapturedImage: UIImage?
-
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-
-            HStack(spacing: 12) {
-                PhotosPicker(
-                    selection: $selectedItems,
-                    maxSelectionCount: 10,
-                    matching: .images
-                ) {
-                    sourceTile(
-                        icon: "photo.on.rectangle",
-                        title: "Gallery",
-                        color: .secondary
-                    )
-                }
-            }
 
             if !displayImages.isEmpty {
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -55,6 +38,22 @@ struct PhotoPickerView: View {
                     }
                 }
             }
+            
+            HStack(spacing: 12) {
+                PhotosPicker(
+                    selection: $selectedItems,
+                    maxSelectionCount: 10,
+                    matching: .images
+                ) {
+                    sourceTile(
+                        icon: "photo.on.rectangle",
+                        title: "Gallery",
+                        color: .secondary
+                    )
+                }
+            }
+
+            
         }
         .onAppear {
             displayImages = selectedPhotosData.compactMap { UIImage(data: $0) }
@@ -65,19 +64,13 @@ struct PhotoPickerView: View {
                     if let data = try? await item.loadTransferable(type: Data.self),
                        let image = UIImage(data: data) {
                         displayImages.append(image)
-                        selectedPhotosData.append(data)
-                    }
+                        selectedPhotosData.insert(data, at: 0)                    }
                 }
                 selectedItems.removeAll()
             }
         }
-        .onChange(of: cameraCapturedImage) {
-            if let img = cameraCapturedImage,
-               let data = img.jpegData(compressionQuality: 0.6) {
-                displayImages.append(img)
-                selectedPhotosData.append(data)
-            }
-            cameraCapturedImage = nil
+        .onChange(of: selectedPhotosData) { _, newValue in
+            displayImages = newValue.compactMap { UIImage(data: $0) }
         }
     }
 
@@ -102,3 +95,4 @@ struct PhotoPickerView: View {
         }
     }
 }
+

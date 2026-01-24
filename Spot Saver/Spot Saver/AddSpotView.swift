@@ -9,6 +9,7 @@ import SwiftUI
 import CoreLocation
 import Combine
 import PhotosUI
+import UIKit
 
 struct AddSpotView: View {
     var onSave: (Spot) -> Void
@@ -22,7 +23,21 @@ struct AddSpotView: View {
     @State private var showValidationError = false
     @State private var validationMessage = ""
     @State private var attemptedSave = false
+    @State private var showCamera = false
+    @State private var capturedImage: UIImage?
 
+    private func sourceTile(icon: String, title: String, color: Color) -> some View {
+        VStack {
+            Image(systemName: icon).font(.title2)
+            Text(title).font(.caption).fontWeight(.medium)
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 80)
+        .background(color.opacity(0.1))
+        .foregroundStyle(color)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+    
     var body: some View {
         NavigationStack {
             Form {
@@ -74,6 +89,18 @@ struct AddSpotView: View {
                 // MARK: - Photo Section
                 Section {
                     PhotoPickerView(selectedPhotosData: $viewModel.selectedPhotosData)
+                    
+                    HStack(spacing: 12) {
+                        Button {
+                            showCamera = true
+                        } label: {
+                            sourceTile(
+                                icon: "camera",
+                                title: "Camera",
+                                color: .secondary
+                            )
+                        }
+                    }
                     
                     if attemptedSave && viewModel.selectedPhotosData.isEmpty {
                         Text("Adding at least one photo helps you identify the spot later.")
@@ -141,6 +168,15 @@ struct AddSpotView: View {
                     viewModel.location = location.coordinate
                 }
             }
+            .sheet(isPresented: $showCamera) {
+                CameraView(selectedImage: $capturedImage)
+            }
+            .onChange(of: capturedImage) { _, newValue in
+                if let img = newValue, let data = img.jpegData(compressionQuality: 0.6) {
+                    viewModel.selectedPhotosData.append(data)
+                }
+                capturedImage = nil
+            }
         }
     }
     
@@ -165,3 +201,4 @@ struct AddSpotView: View {
         }
     }
 }
+
