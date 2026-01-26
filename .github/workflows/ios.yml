@@ -17,7 +17,7 @@ jobs:
       with:
         xcode-version: latest-stable
 
-    # Debug step (optional, you can remove this if you want)
+    # Debug step to verify file structure if needed
     - name: List files (Debug)
       run: ls -R
 
@@ -27,10 +27,13 @@ jobs:
             cd "Spot Saver" && pod install && cd ..
         fi
 
-    - name: Build App
+    - name: Run Tests
       run: |
+        # This command now uses 'test' instead of 'build'
+        # It requires the Scheme to be SHARED in Xcode for it to work.
+        
         xcodebuild \
         -project "Spot Saver/Spot Saver.xcodeproj" \
         -scheme "Spot Saver" \
         -destination 'platform=iOS Simulator,name=iPhone 16' \
-        clean build
+        clean test
