@@ -1,0 +1,36 @@
+name: iOS CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build-test:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+
+    # Debug step (optional, you can remove this if you want)
+    - name: List files (Debug)
+      run: ls -R
+
+    - name: Install dependencies
+      run: |
+        if [ -f "Spot Saver/Podfile" ]; then 
+            cd "Spot Saver" && pod install && cd ..
+        fi
+
+    - name: Build App
+      run: |
+        xcodebuild \
+        -project "Spot Saver/Spot Saver.xcodeproj" \
+        -scheme "Spot Saver" \
+        -destination 'platform=iOS Simulator,name=iPhone 16' \
+        clean build
