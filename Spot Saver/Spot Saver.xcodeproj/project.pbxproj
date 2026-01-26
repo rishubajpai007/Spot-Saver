@@ -13,6 +13,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		FF66EA4A2F275B4500B965CE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FF6FB3AB2E84387D007A14FC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FF6FB3B22E84387D007A14FC;
+			remoteInfo = "Spot Saver";
+		};
 		FF81C1792E8ADA0F00A12CAE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FF6FB3AB2E84387D007A14FC /* Project object */;
@@ -37,6 +44,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		FF66EA462F275B4500B965CE /* Spot SaverTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Spot SaverTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF6FB3B32E84387D007A14FC /* Spot Saver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Spot Saver.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF81C1672E8ADA0D00A12CAE /* SpotSaverWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SpotSaverWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF81C1692E8ADA0D00A12CAE /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
@@ -62,6 +70,11 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		FF66EA472F275B4500B965CE /* Spot SaverTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Spot SaverTests";
+			sourceTree = "<group>";
+		};
 		FF6FB3B52E84387D007A14FC /* Spot Saver */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -81,6 +94,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		FF66EA432F275B4500B965CE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FF6FB3B02E84387D007A14FC /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -106,6 +126,7 @@
 				FF81C1822E8ADBA900A12CAE /* SpotSaverWidgetExtension.entitlements */,
 				FF6FB3B52E84387D007A14FC /* Spot Saver */,
 				FF81C16D2E8ADA0D00A12CAE /* SpotSaverWidget */,
+				FF66EA472F275B4500B965CE /* Spot SaverTests */,
 				FF81C1682E8ADA0D00A12CAE /* Frameworks */,
 				FF6FB3B42E84387D007A14FC /* Products */,
 			);
@@ -116,6 +137,7 @@
 			children = (
 				FF6FB3B32E84387D007A14FC /* Spot Saver.app */,
 				FF81C1672E8ADA0D00A12CAE /* SpotSaverWidgetExtension.appex */,
+				FF66EA462F275B4500B965CE /* Spot SaverTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -132,6 +154,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		FF66EA452F275B4500B965CE /* Spot SaverTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FF66EA4E2F275B4500B965CE /* Build configuration list for PBXNativeTarget "Spot SaverTests" */;
+			buildPhases = (
+				FF66EA422F275B4500B965CE /* Sources */,
+				FF66EA432F275B4500B965CE /* Frameworks */,
+				FF66EA442F275B4500B965CE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FF66EA4B2F275B4500B965CE /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				FF66EA472F275B4500B965CE /* Spot SaverTests */,
+			);
+			name = "Spot SaverTests";
+			packageProductDependencies = (
+			);
+			productName = "Spot SaverTests";
+			productReference = FF66EA462F275B4500B965CE /* Spot SaverTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		FF6FB3B22E84387D007A14FC /* Spot Saver */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = FF6FB3BE2E84387E007A14FC /* Build configuration list for PBXNativeTarget "Spot Saver" */;
@@ -185,9 +230,13 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2600;
+				LastSwiftUpdateCheck = 2620;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
+					FF66EA452F275B4500B965CE = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = FF6FB3B22E84387D007A14FC;
+					};
 					FF6FB3B22E84387D007A14FC = {
 						CreatedOnToolsVersion = 26.0.1;
 					};
@@ -212,11 +261,19 @@
 			targets = (
 				FF6FB3B22E84387D007A14FC /* Spot Saver */,
 				FF81C1662E8ADA0D00A12CAE /* SpotSaverWidgetExtension */,
+				FF66EA452F275B4500B965CE /* Spot SaverTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		FF66EA442F275B4500B965CE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FF6FB3B12E84387D007A14FC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -234,6 +291,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		FF66EA422F275B4500B965CE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FF6FB3AF2E84387D007A14FC /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -251,6 +315,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		FF66EA4B2F275B4500B965CE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FF6FB3B22E84387D007A14FC /* Spot Saver */;
+			targetProxy = FF66EA4A2F275B4500B965CE /* PBXContainerItemProxy */;
+		};
 		FF81C17A2E8ADA0F00A12CAE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = FF81C1662E8ADA0D00A12CAE /* SpotSaverWidgetExtension */;
@@ -259,6 +328,50 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		FF66EA4C2F275B4500B965CE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = S286S6SAFP;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rishubajpai.Spot-SaverTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Spot Saver.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Spot Saver";
+			};
+			name = Debug;
+		};
+		FF66EA4D2F275B4500B965CE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = S286S6SAFP;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.rishubajpai.Spot-SaverTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Spot Saver.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Spot Saver";
+			};
+			name = Release;
+		};
 		FF6FB3BC2E84387E007A14FC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -519,6 +632,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		FF66EA4E2F275B4500B965CE /* Build configuration list for PBXNativeTarget "Spot SaverTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FF66EA4C2F275B4500B965CE /* Debug */,
+				FF66EA4D2F275B4500B965CE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		FF6FB3AE2E84387D007A14FC /* Build configuration list for PBXProject "Spot Saver" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
