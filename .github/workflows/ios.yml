@@ -17,16 +17,23 @@ jobs:
       with:
         xcode-version: latest-stable
 
-    # Optional: You can keep this if you might use CocoaPods later, 
-    # otherwise it does nothing if you don't have a Podfile.
+    # 👇 DEBUG STEP: This lists all files so you can check the correct path in logs
+    - name: List files (Debug)
+      run: ls -R
+
     - name: Install dependencies
       run: |
-        if [ -f Podfile ]; then pod install; fi
+        if [ -f "Spot Saver/Podfile" ]; then 
+            cd "Spot Saver" && pod install && cd ..
+        fi
 
     - name: Build & Test
       run: |
+        # I assumed your project is inside a folder named "Spot Saver".
+        # If the error persists, check the "List files" log to see the real folder name.
+        
         xcodebuild \
-        -project "Spot Saver.xcodeproj" \
+        -project "Spot Saver/Spot Saver.xcodeproj" \
         -scheme "Spot Saver" \
         -destination 'platform=iOS Simulator,name=iPhone 16' \
         clean test
