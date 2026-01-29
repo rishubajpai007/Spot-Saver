@@ -1,15 +1,20 @@
-
 default_platform(:ios)
 
 platform :ios do
   desc "Push a new beta build to TestFlight"
   lane :beta do
     
-    # 1. Setup CI (Create a temporary keychain for the runner)
+    # 1. Setup CI
     setup_ci
 
-    # 2. Decode the P12 and Profile from GitHub Secrets
-    # (The YAML file creates these files, Fastlane just reads them)
+    # 2. Disable Automatic Signing (Critical for CI)
+    # This forces Xcode to use the profiles we provide below
+    update_code_signing_settings(
+      use_automatic_signing: false,
+      targets: ["Spot Saver", "SpotSaverWidgetExtension"] # Match your target names exactly
+    )
+
+    # 3. Decode Certificates & Profiles
     import_certificate(
       certificate_path: "build_certificate.p12",
       certificate_password: ENV["P12_PASSWORD"],
@@ -17,11 +22,17 @@ platform :ios do
       keychain_password: ""
     )
     
+    # Install Main App Profile
     install_provisioning_profile(
       path: "profile.mobileprovision"
     )
 
-    # 3. Connect to App Store Connect (Using the API Key Secrets)
+    # Install Widget Profile
+    install_provisioning_profile(
+      path: "widget_profile.mobileprovision"
+    )
+
+    # 4. Connect to App Store Connect
     api_key = app_store_connect_api_key(
       key_id: ENV["APP_STORE_CONNECT_KEY_ID"],
       issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
@@ -30,14 +41,20 @@ platform :ios do
       in_house: false
     )
 
-    # 4. Build the App
+    # 5. Build the App with Manual Mapping
     build_app(
       scheme: "Spot Saver",
       clean: true,
-      export_method: "app-store"
+      export_method: "app-store",
+      export_options: {
+        provisioningProfiles: {
+          "com.rishu.Spot-Saver": "Spot Saver App Store",
+          "com.rishu.Spot-Saver.SpotSaverWidget": "Spot Saver Widget App Store"
+        }
+      }
     )
 
-    # 5. Upload to TestFlight
+    # 6. Upload
     upload_to_testflight(
       api_key: api_key,
       skip_waiting_for_build_processing: true
