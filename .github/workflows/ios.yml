@@ -23,15 +23,25 @@ jobs:
       with:
         ruby-version: '3.0'
 
-    # 2. Install Dependencies
+    # 2. Install Dependencies (FIXED)
     - name: Install Dependencies
       run: |
+        # Install the latest standard bundler
         gem install bundler
-        gem install fastlane
         
-        # Check if Podfile exists and install pods if needed
-        if [ -f "Spot Saver/Podfile" ]; then 
-            cd "Spot Saver" && pod install && cd ..
+        # Enter project folder
+        cd "Spot Saver"
+        
+        # FIX: Force the lockfile to use the installed bundler version
+        # (This fixes the "Could not find bundler 4.0.3" error)
+        bundle update --bundler
+        
+        # Install the rest of the gems
+        bundle install
+        
+        # Install Pods (if Podfile exists)
+        if [ -f "Podfile" ]; then 
+            pod install
         fi
 
     # 3. RUN TESTS
@@ -50,7 +60,7 @@ jobs:
         # --- File Secrets ---
         BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
         BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.BUILD_PROVISION_PROFILE_BASE64 }}
-        WIDGET_PROVISION_PROFILE_BASE64: ${{ secrets.WIDGET_PROVISION_PROFILE_BASE64 }} # <--- NEW WIDGET SECRET
+        WIDGET_PROVISION_PROFILE_BASE64: ${{ secrets.WIDGET_PROVISION_PROFILE_BASE64 }}
         
         # --- API Key Secrets ---
         APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
