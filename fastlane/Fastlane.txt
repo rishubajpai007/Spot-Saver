@@ -7,14 +7,13 @@ platform :ios do
     # 1. Setup CI
     setup_ci
 
-    # 2. Disable Automatic Signing
-    # We must force Xcode to use the files we provide manually
+    # 2. Disable Automatic Signing (Forces Xcode to listen to us)
     update_code_signing_settings(
       use_automatic_signing: false,
       targets: ["Spot Saver", "SpotSaverWidgetExtension"]
     )
 
-    # 3. Unlock the Keychain & Import Certificate
+    # 3. Import Certificate
     import_certificate(
       certificate_path: "build_certificate.p12",
       certificate_password: ENV["P12_PASSWORD"],
@@ -22,17 +21,11 @@ platform :ios do
       keychain_password: ""
     )
     
-    # 4. Install Main App Profile
-    install_provisioning_profile(
-      path: "profile.mobileprovision"
-    )
+    # 4. Install Profiles
+    install_provisioning_profile(path: "profile.mobileprovision")
+    install_provisioning_profile(path: "widget_profile.mobileprovision")
 
-    # 5. Install Widget Profile
-    install_provisioning_profile(
-      path: "widget_profile.mobileprovision"
-    )
-
-    # 6. Connect to App Store Connect
+    # 5. Connect to Apple
     api_key = app_store_connect_api_key(
       key_id: ENV["APP_STORE_CONNECT_KEY_ID"],
       issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
@@ -41,22 +34,20 @@ platform :ios do
       in_house: false
     )
 
-    # 7. Build the App
+    # 6. Build the App
     build_app(
       scheme: "Spot Saver",
       clean: true,
       export_method: "app-store",
       export_options: {
         provisioningProfiles: {
-          # LEFT SIDE: Your Bundle ID (from the error log)
-          # RIGHT SIDE: The Profile Name you typed on Apple Website
           "com.rishu.Spot-Saver": "Spot Saver App Store",
           "com.rishu.Spot-Saver.SpotSaverWidget": "Spot Saver Widget App Store"
         }
       }
     )
 
-    # 8. Upload to TestFlight
+    # 7. Upload
     upload_to_testflight(
       api_key: api_key,
       skip_waiting_for_build_processing: true
